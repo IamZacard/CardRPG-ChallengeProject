@@ -2,11 +2,13 @@ using UnityEngine;
 
 public class DefenseCard : Card
 {
-    public int block;
-
-    public override void Play()
+    public DefenseCard(CardData data) : base(data)
     {
-        // Placeholder logic; would typically apply block to the player
-        Debug.Log($"Playing {cardName}, gaining {block} block.");
+        if (data.cardType != CardType.Defense)
+        {
+            Debug.LogWarning($"Card {data.cardName} is not a Defense card but using DefenseCard class");
+        }
     }
+
+    // Special defense card functionality
 }

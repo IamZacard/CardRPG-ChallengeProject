@@ -1,28 +1,72 @@
+// Hand.cs - Manages the player's current hand of cards
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
-public class Hand : MonoBehaviour
+public class Hand
 {
-    public List<CardData> cardsInHand = new List<CardData>();
-    public int maxHandSize = 5;
+    private List<Card> cards = new List<Card>();
+    private int maxHandSize;
 
-    public void AddCard(CardData card)
+    public int Count => cards.Count;
+    public bool IsFull => cards.Count >= maxHandSize;
+
+    public event Action<Card> OnCardAdded;
+    public event Action<Card> OnCardRemoved;
+
+    public Hand(int maxSize = 10)
     {
-        if (cardsInHand.Count < maxHandSize)
+        maxHandSize = maxSize;
+    }
+
+    public bool AddCard(Card card)
+    {
+        if (IsFull)
         {
-            cardsInHand.Add(card);
+            return false;
         }
-        else
+
+        cards.Add(card);
+        OnCardAdded?.Invoke(card);
+        return true;
+    }
+
+    public bool RemoveCard(Card card)
+    {
+        bool removed = cards.Remove(card);
+        if (removed)
         {
-            Debug.Log("Hand is full!");
+            OnCardRemoved?.Invoke(card);
+        }
+        return removed;
+    }
+
+    public Card GetCard(int index)
+    {
+        if (index < 0 || index >= cards.Count)
+        {
+            return null;
+        }
+
+        return cards[index];
+    }
+
+    public List<Card> GetAllCards()
+    {
+        return new List<Card>(cards);
+    }
+
+    public void Clear()
+    {
+        List<Card> cardsCopy = new List<Card>(cards);
+        foreach (var card in cardsCopy)
+        {
+            RemoveCard(card);
         }
     }
 
-    public void RemoveCard(CardData card)
+    public List<Card> GetPlayableCards(CombatState combatState)
     {
-        if (cardsInHand.Contains(card))
-        {
-            cardsInHand.Remove(card);
-        }
+        return cards.FindAll(card => card.CanBePlayed(combatState));
     }
 }

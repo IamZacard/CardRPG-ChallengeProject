@@ -6,7 +6,7 @@ public class CardUI : MonoBehaviour
 
     public void DisplayHand(Hand hand)
     {
-        Debug.Log($"Displaying hand with {hand.cardsInHand.Count} cards.");
+        //Debug.Log($"Displaying hand with {hand.cardsInHand.Count} cards.");
         // Instantiate card UI prefabs for each card in hand
     }
 }

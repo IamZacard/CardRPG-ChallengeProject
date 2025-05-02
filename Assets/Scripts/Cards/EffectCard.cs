@@ -2,11 +2,13 @@ using UnityEngine;
 
 public class EffectCard : Card
 {
-    public StatusEffect effect;
-
-    public override void Play()
+    public EffectCard(CardData data) : base(data)
     {
-        // Placeholder logic; would apply the effect to a target
-        Debug.Log($"Playing {cardName}, applying {effect.effectName} effect.");
+        if (data.cardType != CardType.Effect)
+        {
+            Debug.LogWarning($"Card {data.cardName} is not an Effect card but using EffectCard class");
+        }
     }
+
+    // Special effect card functionality
 }

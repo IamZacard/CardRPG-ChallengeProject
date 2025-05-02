@@ -2,11 +2,13 @@ using UnityEngine;
 
 public class AttackCard : Card
 {
-    public int damage;
-
-    public override void Play()
+    public AttackCard(CardData data) : base(data)
     {
-        // Placeholder logic; in a real game, this would target an enemy
-        Debug.Log($"Playing {cardName}, dealing {damage} damage.");
+        if (data.cardType != CardType.Attack)
+        {
+            Debug.LogWarning($"Card {data.cardName} is not an Attack card but using AttackCard class");
+        }
     }
+
+    // Special attack card functionality
 }
