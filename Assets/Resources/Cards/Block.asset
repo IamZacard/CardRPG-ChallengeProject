@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99ade4ff4689fcc4da014774ba840c37, type: 3}
+  m_Name: Block
+  m_EditorClassIdentifier: 
+  Name: Block
+  Description: Block incoming damage
+  Artwork: {fileID: 0}
+  Cost: 1
+  Type: 1
+  Rarity: 0
+  Target: 0
+  Damage: 0
+  Block: 5
+  Healing: 0
+  StatusEffect:
+    Type: 0
+    Amount: 0
+    Target: 0
+  Exhaust: 0
+  Retain: 0
+  Ethereal: 0

@@ -1,32 +1,40 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Deck : MonoBehaviour
 {
-    public List<CardData> cards = new List<CardData>();
+    private List<Card> cards = new List<Card>();
+    public UnityEvent OnDeckShuffled = new UnityEvent();
+    public UnityEvent OnCardDrawn = new UnityEvent();
+    public int Count => cards.Count;
+    public bool IsEmpty => cards.Count == 0;
 
-    // Shuffles the deck using Fisher-Yates algorithm
+    public void AddCard(Card card) => cards.Add(card);
+
     public void Shuffle()
     {
-        for (int i = 0; i < cards.Count; i++)
+        for (int i = cards.Count - 1; i > 0; i--)
         {
-            CardData temp = cards[i];
-            int randomIndex = Random.Range(i, cards.Count);
-            cards[i] = cards[randomIndex];
-            cards[randomIndex] = temp;
+            int j = Random.Range(0, i + 1);
+            Card temp = cards[i];
+            cards[i] = cards[j];
+            cards[j] = temp;
         }
+        OnDeckShuffled?.Invoke();
     }
 
-    // Draws the top card and removes it from the deck
-    public CardData DrawCard()
+    public Card Draw()
     {
-        if (cards.Count > 0)
-        {
-            CardData drawnCard = cards[0];
-            cards.RemoveAt(0);
-            return drawnCard;
-        }
-        Debug.Log("Deck is empty!");
-        return null;
+        if (IsEmpty) return null;
+        Card card = cards[0];
+        cards.RemoveAt(0);
+        OnCardDrawn?.Invoke();
+        return card;
+    }
+
+    internal void AddCard(object value)
+    {
+        throw new System.NotImplementedException();
     }
 }

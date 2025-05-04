@@ -1,21 +1,94 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class MapGenerator : MonoBehaviour
 {
-    public GameObject nodePrefab;
-    public int numberOfNodes = 10;
+    [SerializeField] private GameObject mapPanel; // Reference to MapPanel GameObject
+    private MapNode currentNode;
 
-    void Start()
+    public MapNode GenerateFloor(int floorNumber)
     {
-        GenerateMap();
+        MapNode startNode = new GameObject("Start").AddComponent<MapNode>();
+        startNode.Type = NodeType.Combat;
+
+        MapNode endNode = new GameObject("Boss").AddComponent<MapNode>();
+        endNode.Type = NodeType.Boss;
+
+        startNode.NextNodes.Add(endNode); // Simple linear path for prototype
+        currentNode = startNode;
+        return startNode;
     }
 
-    void GenerateMap()
+    public void MoveToNode(MapNode node)
     {
-        for (int i = 0; i < numberOfNodes; i++)
+        if (node == null || !currentNode.NextNodes.Contains(node))
         {
-            GameObject node = Instantiate(nodePrefab, new Vector3(i * 2, 0, 0), Quaternion.identity);
-            node.GetComponent<MapNode>().type = (MapNode.NodeType)Random.Range(0, 4); // Random type
+            Debug.LogError("Invalid node transition");
+            return;
         }
+
+        currentNode.Complete();
+        currentNode = node;
+
+        // Trigger node-specific logic
+        switch (node.Type)
+        {
+            case NodeType.Combat:
+                StartCombat();
+                break;
+            case NodeType.Boss:
+                StartBossCombat();
+                break;
+            case NodeType.Rest:
+                TriggerRest();
+                break;
+                // Add other node types (Merchant, Event, etc.) as needed
+        }
+
+        // Update map UI
+        FindObjectOfType<MapUI>().Initialize(currentNode);
+    }
+
+    private void StartCombat()
+    {
+        // Initialize a standard combat encounter
+        CombatState combatState = FindObjectOfType<CombatState>();
+        Player player = FindObjectOfType<Player>();
+        List<Enemy> enemies = new List<Enemy> { CreateEnemy("BasicEnemy") };
+        combatState.Initialize(player, enemies, FindObjectOfType<Deck>(), FindObjectOfType<Hand>(), FindObjectOfType<DiscardPile>());
+        combatState.StartTurn();
+        if (mapPanel != null)
+            mapPanel.SetActive(false);
+    }
+
+    private void StartBossCombat()
+    {
+        // Initialize a boss combat
+        CombatState combatState = FindObjectOfType<CombatState>();
+        Player player = FindObjectOfType<Player>();
+        List<Enemy> enemies = new List<Enemy> { CreateEnemy("BossEnemy") };
+        combatState.Initialize(player, enemies, FindObjectOfType<Deck>(), FindObjectOfType<Hand>(), FindObjectOfType<DiscardPile>());
+        combatState.StartTurn();
+        if (mapPanel != null)
+            mapPanel.SetActive(false);
+    }
+
+    private void TriggerRest()
+    {
+        // Heal player
+        Player player = FindObjectOfType<Player>();
+        if (player != null)
+        {
+            player.Heal(20); // Use Heal method instead of direct Health modification
+            FindObjectOfType<HealthBarUI>().UpdateHealth();
+        }
+    }
+
+    private Enemy CreateEnemy(string enemyType)
+    {
+        GameObject enemyObj = new GameObject(enemyType);
+        Enemy enemy = enemyObj.AddComponent<Enemy>();
+        // Configure enemy stats (e.g., health, AI) based on enemyType
+        return enemy;
     }
 }

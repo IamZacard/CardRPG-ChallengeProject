@@ -1,12 +1,18 @@
 using UnityEngine;
+using UnityEngine.Events;
 
-public abstract class Card : ScriptableObject
+public abstract class Card : MonoBehaviour
 {
-    public string cardName;
-    public int cost;
-    public string description;
-    public Sprite artwork;
+    public CardData Data { get; private set; }
+    public UnityEvent OnCardPlayed = new UnityEvent();
+    public UnityEvent OnCardDiscarded = new UnityEvent();
+    public UnityEvent OnCardExhausted = new UnityEvent();
 
-    // Abstract method to define card behavior when played
-    public abstract void Play();
+    public void Initialize(CardData data) => Data = data;
+
+    public bool CanBePlayed(int currentEnergy) => currentEnergy >= Data.Cost;
+
+    public abstract void Play(Entity target);
+
+    public virtual string GetCurrentDescription() => Data.Description;
 }

@@ -1,11 +1,8 @@
-using UnityEngine;
-
 public class Enemy : Entity
 {
-    public EnemyAI ai;
-
-    public override void TakeDamage(int damage)
+    public void PerformAction()
     {
-        base.TakeDamage(damage);
+        // Simple AI: Deal 10 damage to player
+        FindObjectOfType<Player>().TakeDamage(10);
     }
 }

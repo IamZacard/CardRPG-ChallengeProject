@@ -3,26 +3,21 @@ using UnityEngine;
 
 public class Hand : MonoBehaviour
 {
-    public List<CardData> cardsInHand = new List<CardData>();
-    public int maxHandSize = 5;
+    private List<Card> cards = new List<Card>();
+    public int MaxHandSize = 10;
 
-    public void AddCard(CardData card)
+    public bool AddCard(Card card)
     {
-        if (cardsInHand.Count < maxHandSize)
+        if (cards.Count < MaxHandSize)
         {
-            cardsInHand.Add(card);
+            cards.Add(card);
+            return true;
         }
-        else
-        {
-            Debug.Log("Hand is full!");
-        }
+        return false;
     }
 
-    public void RemoveCard(CardData card)
-    {
-        if (cardsInHand.Contains(card))
-        {
-            cardsInHand.Remove(card);
-        }
-    }
+    public void RemoveCard(Card card) => cards.Remove(card);
+
+    public List<Card> GetPlayableCards(int currentEnergy) =>
+        cards.FindAll(card => card.CanBePlayed(currentEnergy));
 }

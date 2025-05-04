@@ -2,27 +2,25 @@ using UnityEngine;
 
 public abstract class Entity : MonoBehaviour
 {
-    public string entityName;
-    public int maxHealth;
-    public int currentHealth;
-    public int block;
+    public int Health { get; protected set; } = 100;
+    public int Block { get; protected set; } = 0;
+    public int Energy { get; protected set; } = 3;
 
-    public virtual void TakeDamage(int damage)
+    public void TakeDamage(int damage)
     {
-        int damageAfterBlock = damage - block;
-        block = Mathf.Max(0, block - damage); // Reduce block first
-        if (damageAfterBlock > 0)
-        {
-            currentHealth -= damageAfterBlock;
-            if (currentHealth <= 0)
-            {
-                Die();
-            }
-        }
+        int remainingDamage = damage - Block;
+        Block = Mathf.Max(0, Block - damage);
+        if (remainingDamage > 0)
+            Health = Mathf.Max(0, Health - remainingDamage);
     }
 
-    public virtual void Die()
+    public void AddBlock(int amount)
     {
-        Debug.Log($"{entityName} has died.");
+        Block += amount;
+    }
+
+    public void Heal(int amount)
+    {
+        Health = Mathf.Min(100, Health + amount); // Cap at max health (100)
     }
 }

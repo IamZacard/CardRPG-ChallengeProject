@@ -2,11 +2,12 @@ using UnityEngine;
 
 public class DefenseCard : Card
 {
-    public int block;
-
-    public override void Play()
+    public override void Play(Entity target)
     {
-        // Placeholder logic; would typically apply block to the player
-        Debug.Log($"Playing {cardName}, gaining {block} block.");
+        if (target != null)
+        {
+            target.AddBlock(Data.Block);
+            OnCardPlayed?.Invoke();
+        }
     }
 }
