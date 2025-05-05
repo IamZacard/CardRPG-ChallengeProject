@@ -1,32 +1,64 @@
+// CardData.cs - ScriptableObject for card definitions
 using UnityEngine;
+using System.Collections.Generic;
 
-[CreateAssetMenu(fileName = "NewCard", menuName = "CardGame/CardData")]
-public class CardData : ScriptableObject
+public enum CardType
 {
-    public string Name;
-    public string Description;
-    public Sprite Artwork;
-    public int Cost; // Energy cost to play
-    public CardType Type; // Attack, Defense, Effect, etc.
-    public CardRarity Rarity; // Common, Rare, Epic
-    public CardTarget Target; // SingleEnemy, AllEnemies, Self, None
-    public int Damage; // For attack cards
-    public int Block; // For defense cards
-    public int Healing; // For effect cards
-    public StatusEffectData StatusEffect; // Type, amount, target
-    public bool Exhaust; // Discarded permanently after play
-    public bool Retain; // Stays in hand after turn
-    public bool Ethereal; // Exhausts if not played this turn
+    Attack,
+    Defense,
+    Effect
 }
 
-public enum CardType { Attack, Defense, Effect }
-public enum CardRarity { Common, Rare, Epic }
-public enum CardTarget { SingleEnemy, AllEnemies, Self, None }
-
-[System.Serializable]
-public struct StatusEffectData
+public enum CardRarity
 {
-    public StatusEffectType Type;
-    public int Amount;
-    public CardTarget Target;
+    Common,
+    Uncommon,
+    Rare
+}
+
+public enum CardTarget
+{
+    SingleEnemy,
+    AllEnemies,
+    Self,
+    None
+}
+
+[CreateAssetMenu(fileName = "New Card", menuName = "Cards/Card Data")]
+public class CardData : ScriptableObject
+{
+    [Header("Basic Info")]
+    public string cardName;
+    public string description;
+    public Sprite artwork;
+    public int cost;
+    public CardType cardType;
+    public CardRarity rarity;
+    public CardTarget target;
+
+    [Header("Effects")]
+    public int damage;
+    public int block;
+    public List<StatusEffectData> statusEffects = new List<StatusEffectData>();
+
+    [Header("Special")]
+    public bool exhaust;
+    public bool retain;
+    public bool ethereal;
+    public string specialEffectId;
+
+    [System.Serializable]
+    public class StatusEffectData
+    {
+        public StatusEffectType type;
+        public int amount;
+        public TargetType targetType;
+
+        public enum TargetType
+        {
+            Self,
+            Target,
+            AllEnemies
+        }
+    }
 }

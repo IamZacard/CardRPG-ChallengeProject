@@ -2,12 +2,13 @@ using UnityEngine;
 
 public class DefenseCard : Card
 {
-    public override void Play(Entity target)
+    public DefenseCard(CardData data) : base(data)
     {
-        if (target != null)
+        if (data.cardType != CardType.Defense)
         {
-            target.AddBlock(Data.Block);
-            OnCardPlayed?.Invoke();
+            Debug.LogWarning($"Card {data.cardName} is not a Defense card but using DefenseCard class");
         }
     }
+
+    // Special defense card functionality
 }

@@ -1,22 +1,47 @@
+// CardFactory.cs - Factory for creating card instances
 using UnityEngine;
+using System.Collections.Generic;
 
-public class CardFactory : MonoBehaviour
+public static class CardFactory
 {
-    public Card CreateCard(CardData data)
+    public static Card CreateCard(CardData cardData)
     {
-        Card card = data.Type switch
+        switch (cardData.cardType)
         {
-            CardType.Attack => gameObject.AddComponent<AttackCard>(),
-            CardType.Defense => gameObject.AddComponent<DefenseCard>(),
-            //CardType.Effect => gameObject.AddComponent<EffectCard>(),
-            _ => throw new System.ArgumentException("Unknown card type")
-        };
-        card.Initialize(data);
-        return card;
+            case CardType.Attack:
+                return new AttackCard(cardData);
+            case CardType.Defense:
+                return new DefenseCard(cardData);
+            case CardType.Effect:
+                return new EffectCard(cardData);
+            default:
+                Debug.LogError($"Unknown card type for card {cardData.cardName}");
+                return null;
+        }
     }
 
-    public void UpgradeCard(Card card, int damageIncrease)
+    public static List<Card> CreateStarterDeck()
     {
-        card.Data.Damage += damageIncrease; // Simplified upgrade example
+        List<Card> starterDeck = new List<Card>();
+
+        // Load starter cards from Resources
+        CardData[] starterCardData = Resources.LoadAll<CardData>("CardData/StarterCards");
+
+        foreach (var cardData in starterCardData)
+        {
+            // Add appropriate number of each card
+            int count = 1;
+            if (cardData.cardName == "Strike" || cardData.cardName == "Defend")
+            {
+                count = 5; // Standard starter deck often has multiple basic cards
+            }
+
+            for (int i = 0; i < count; i++)
+            {
+                starterDeck.Add(CreateCard(cardData));
+            }
+        }
+
+        return starterDeck;
     }
 }

@@ -1,72 +1,100 @@
-using System.Collections.Generic;
+// CombatState.cs - Contains all relevant information about the current combat state
 using UnityEngine;
+using System.Collections.Generic;
 
-public class CombatState : MonoBehaviour
+public class CombatState
 {
-    public Player Player { get; private set; }
-    public List<Enemy> Enemies { get; private set; }
-    public Deck Deck { get; private set; }
-    public Hand Hand { get; private set; }
-    public DiscardPile Discard { get; private set; }
-    private bool isPlayerTurn = true;
+    public Player Player { get; set; }
+    public Enemy[] Enemies { get; set; }
+    public Deck DrawPile { get; set; }
+    public Deck DiscardPile { get; set; }
+    public Deck ExhaustPile { get; set; }
+    public int TurnNumber { get; set; }
+    public bool IsPlayerTurn { get; set; }
 
-    public void Initialize(Player player, List<Enemy> enemies, Deck deck, Hand hand, DiscardPile discard)
+    // Reference to the combat manager for callbacks
+    public CombatManager CombatManager { get; set; }
+
+    // Find a specific enemy by ID or reference
+    public Enemy FindEnemy(int enemyId)
     {
-        Player = player;
-        Enemies = enemies;
-        Deck = deck;
-        Hand = hand;
-        Discard = discard;
+        foreach (var enemy in Enemies)
+        {
+            if (enemy.GetInstanceID() == enemyId)
+            {
+                return enemy;
+            }
+        }
+        return null;
     }
 
-    public void StartTurn()
+    // Check if all enemies are dead
+    public bool AreAllEnemiesDead()
     {
+        foreach (var enemy in Enemies)
+        {
+            if (enemy != null && enemy.CurrentHealth > 0)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // Find all alive enemies
+    public List<Enemy> GetAliveEnemies()
+    {
+        List<Enemy> aliveEnemies = new List<Enemy>();
+        foreach (var enemy in Enemies)
+        {
+            if (enemy != null && enemy.CurrentHealth > 0)
+            {
+                aliveEnemies.Add(enemy);
+            }
+        }
+        return aliveEnemies;
+    }
+
+    // Check if player has enough action points for a specific cost
+    public bool HasEnoughActionPoints(int cost)
+    {
+        return Player.CurrentActionPoints >= cost;
+    }
+
+    // Reset state for a new turn
+    public void StartNewTurn(bool isPlayerTurn)
+    {
+        TurnNumber++;
+        IsPlayerTurn = isPlayerTurn;
+
         if (isPlayerTurn)
         {
-            DrawCards(5); // Draw 5 cards at turn start
-            Player.ResetEnergy();
+            Player.OnStartTurn();
         }
         else
         {
-            foreach (var enemy in Enemies)
-                enemy.PerformAction();
-            isPlayerTurn = true;
+            // Process enemy turn start
+            foreach (var enemy in GetAliveEnemies())
+            {
+                enemy.OnStartTurn();
+            }
         }
     }
 
-    public void PlayCard(Card card, Entity target = null)
+    // End the current turn
+    public void EndCurrentTurn()
     {
-        if (!isPlayerTurn || !card.CanBePlayed(Player.Energy))
-            return;
-
-        // Play the card
-        Player.PlayCard(card, target ?? Enemies[0]); // Default to first enemy if no target
-        Hand.RemoveCard(card);
-
-        // Handle card properties (exhaust, ethereal, etc.)
-        if (card.Data.Exhaust || card.Data.Ethereal)
-            FindObjectOfType<ExhaustPile>().AddCard(card);
+        if (IsPlayerTurn)
+        {
+            Player.OnEndTurn();
+        }
         else
-            Discard.AddCard(card);
-
-        // Update game state
-        isPlayerTurn = !CheckWin() && !CheckLose(); // End player turn if combat ends
-        UpdateUI();
-    }
-
-    private void DrawCards(int count)
-    {
-        for (int i = 0; i < count && !Deck.IsEmpty; i++)
-            Hand.AddCard(Deck.Draw());
-    }
-
-    public bool CheckWin() => Enemies.TrueForAll(e => e.Health <= 0);
-    public bool CheckLose() => Player.Health <= 0;
-
-    private void UpdateUI()
-    {
-        FindObjectOfType<PlayerInfoUI>()?.UpdateEnergy();
-        foreach (var healthBar in FindObjectsOfType<HealthBarUI>())
-            healthBar.UpdateHealth();
+        {
+            // Process enemy turn end
+            foreach (var enemy in GetAliveEnemies())
+            {
+                enemy.OnEndTurn();
+            }
+        }
     }
 }

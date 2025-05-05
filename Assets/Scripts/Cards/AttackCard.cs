@@ -1,11 +1,14 @@
+using UnityEngine;
+
 public class AttackCard : Card
 {
-    public override void Play(Entity target)
+    public AttackCard(CardData data) : base(data) 
     {
-        if (target != null)
+        if (data.cardType != CardType.Attack)
         {
-            target.TakeDamage(Data.Damage);
-            OnCardPlayed?.Invoke();
+            Debug.LogWarning($"Card {data.cardName} is not an Attack card but using AttackCard class");
         }
     }
+    
+    // Special attack card functionality
 }

@@ -1,40 +1,81 @@
+// Deck.cs - Handles deck operations
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
+using System;
 
-public class Deck : MonoBehaviour
+public class Deck
 {
     private List<Card> cards = new List<Card>();
-    public UnityEvent OnDeckShuffled = new UnityEvent();
-    public UnityEvent OnCardDrawn = new UnityEvent();
+
     public int Count => cards.Count;
     public bool IsEmpty => cards.Count == 0;
 
-    public void AddCard(Card card) => cards.Add(card);
+    public event Action OnDeckShuffled;
+    public event Action<Card> OnCardAdded;
+    public event Action<Card> OnCardRemoved;
+
+    public void AddCard(Card card)
+    {
+        cards.Add(card);
+        OnCardAdded?.Invoke(card);
+    }
+
+    public bool RemoveCard(Card card)
+    {
+        bool removed = cards.Remove(card);
+        if (removed)
+        {
+            OnCardRemoved?.Invoke(card);
+        }
+        return removed;
+    }
 
     public void Shuffle()
     {
-        for (int i = cards.Count - 1; i > 0; i--)
+        int n = cards.Count;
+        System.Random rng = new System.Random();
+
+        while (n > 1)
         {
-            int j = Random.Range(0, i + 1);
-            Card temp = cards[i];
-            cards[i] = cards[j];
-            cards[j] = temp;
+            n--;
+            int k = rng.Next(n + 1);
+            Card temp = cards[k];
+            cards[k] = cards[n];
+            cards[n] = temp;
         }
+
         OnDeckShuffled?.Invoke();
     }
 
-    public Card Draw()
+    public Card DrawCard()
     {
-        if (IsEmpty) return null;
-        Card card = cards[0];
+        if (IsEmpty)
+        {
+            return null;
+        }
+
+        Card drawnCard = cards[0];
         cards.RemoveAt(0);
-        OnCardDrawn?.Invoke();
-        return card;
+        return drawnCard;
     }
 
-    internal void AddCard(object value)
+    public List<Card> DrawCards(int amount)
     {
-        throw new System.NotImplementedException();
+        List<Card> drawnCards = new List<Card>();
+        for (int i = 0; i < Mathf.Min(amount, cards.Count); i++)
+        {
+            drawnCards.Add(DrawCard());
+        }
+        return drawnCards;
+    }
+
+    public void Clear()
+    {
+        cards.Clear();
+    }
+
+    public List<Card> GetAllCards()
+    {
+        return new List<Card>(cards);
     }
 }
