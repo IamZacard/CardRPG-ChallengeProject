@@ -1,21 +1,31 @@
-// CombatState.cs - Contains all relevant information about the current combat state
 using UnityEngine;
 using System.Collections.Generic;
 
+/// <summary>
+/// Contains all relevant information about the current combat state
+/// </summary>
 public class CombatState
 {
+    // Core references
     public Player Player { get; set; }
     public Enemy[] Enemies { get; set; }
+    public Deck PlayerDeck { get; set; }
     public Deck DrawPile { get; set; }
     public Deck DiscardPile { get; set; }
     public Deck ExhaustPile { get; set; }
+
+    // State tracking
     public int TurnNumber { get; set; }
+    public int TurnCount { get; set; }
     public bool IsPlayerTurn { get; set; }
+    public CombatDifficulty CombatDifficulty { get; set; }
 
     // Reference to the combat manager for callbacks
     public CombatManager CombatManager { get; set; }
 
-    // Find a specific enemy by ID or reference
+    /// <summary>
+    /// Find a specific enemy by ID or reference
+    /// </summary>
     public Enemy FindEnemy(int enemyId)
     {
         foreach (var enemy in Enemies)
@@ -28,7 +38,9 @@ public class CombatState
         return null;
     }
 
-    // Check if all enemies are dead
+    /// <summary>
+    /// Check if all enemies are dead
+    /// </summary>
     public bool AreAllEnemiesDead()
     {
         foreach (var enemy in Enemies)
@@ -41,7 +53,9 @@ public class CombatState
         return true;
     }
 
-    // Find all alive enemies
+    /// <summary>
+    /// Find all alive enemies
+    /// </summary>
     public List<Enemy> GetAliveEnemies()
     {
         List<Enemy> aliveEnemies = new List<Enemy>();
@@ -55,13 +69,17 @@ public class CombatState
         return aliveEnemies;
     }
 
-    // Check if player has enough action points for a specific cost
+    /// <summary>
+    /// Check if player has enough action points for a specific cost
+    /// </summary>
     public bool HasEnoughActionPoints(int cost)
     {
         return Player.CurrentActionPoints >= cost;
     }
 
-    // Reset state for a new turn
+    /// <summary>
+    /// Reset state for a new turn
+    /// </summary>
     public void StartNewTurn(bool isPlayerTurn)
     {
         TurnNumber++;
@@ -81,7 +99,9 @@ public class CombatState
         }
     }
 
-    // End the current turn
+    /// <summary>
+    /// End the current turn
+    /// </summary>
     public void EndCurrentTurn()
     {
         if (IsPlayerTurn)

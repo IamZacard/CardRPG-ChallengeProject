@@ -23,10 +23,14 @@ public abstract class Entity : MonoBehaviour
     public int maxHealth;
     public int currentHealth;
     public int baseBlock;
+    public int maxEnergy;    
 
     [Header("Status")]
     protected Dictionary<StatusEffectType, int> statusEffects = new Dictionary<StatusEffectType, int>();
     protected int currentBlock;
+    public int currentEnergy;
+
+    public PlayerClass playerClass;
 
     // Events
     public event Action<int> OnHealthChanged;
@@ -38,6 +42,9 @@ public abstract class Entity : MonoBehaviour
     public int CurrentHealth => currentHealth;
     public int MaxHealth => maxHealth;
     public int CurrentBlock => currentBlock;
+
+    public int CurrentEnergy => currentEnergy;
+    public int MaxEnergy => maxEnergy;
 
     protected virtual void Awake()
     {

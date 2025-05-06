@@ -14,6 +14,20 @@ public class Deck
     public event Action<Card> OnCardAdded;
     public event Action<Card> OnCardRemoved;
 
+    public void Initialize(List<CardData> cardDataList)
+    {
+        cards.Clear();
+
+        foreach (CardData cardData in cardDataList)
+        {
+            Card newCard = CardFactory.CreateCard(cardData);
+            cards.Add(newCard);
+        }
+
+        Shuffle();
+        Debug.Log($"Deck initialized with {cards.Count} cards");
+    }
+
     public void AddCard(Card card)
     {
         cards.Add(card);

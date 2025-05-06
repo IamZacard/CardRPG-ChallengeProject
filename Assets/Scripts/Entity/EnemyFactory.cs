@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public static class EnemyFactory
 {
-    public static Enemy CreateEnemy(EnemyData enemyData, Transform parent = null)
+    public static Enemy CreateEnemy(EnemyData enemyData, Vector3 position, Transform parent = null)
     {
         // Get enemy prefab from Resources
         GameObject enemyPrefab = Resources.Load<GameObject>("Prefabs/Entities/BaseEnemy");

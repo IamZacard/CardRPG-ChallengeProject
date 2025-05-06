@@ -367,4 +367,9 @@ public class CombatManager : MonoBehaviour
             combatUI.OnEndTurnButtonClicked -= EndPlayerTurn;
         }
     }
+
+    internal void SetCombatState(CombatState combatState)
+    {
+        throw new NotImplementedException();
+    }
 }

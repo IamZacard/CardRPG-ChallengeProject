@@ -190,4 +190,9 @@ public class Player : Entity
                 playerDeck.AddCard(card);
         }
     }
+
+    internal void EquipItem(EquipmentData equipItem)
+    {
+        throw new NotImplementedException();
+    }
 }
