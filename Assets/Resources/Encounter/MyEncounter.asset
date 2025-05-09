@@ -17,6 +17,8 @@ MonoBehaviour:
   description: 
   enemies:
   - {fileID: 11400000, guid: b80bde7421cc4ab448ea327f3fd388b6, type: 2}
+  - {fileID: 11400000, guid: fcc13520bce6830408d40e64abb56a61, type: 2}
+  - {fileID: 11400000, guid: 0f6e58fce40c03d40904da5722fe4f50, type: 2}
   backgroundId: 
   musicTrackId: 
   ambientSoundIds: []

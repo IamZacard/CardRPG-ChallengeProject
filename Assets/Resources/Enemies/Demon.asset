@@ -12,15 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a334170c005e9d745b8ab28f5da0def3, type: 3}
   m_Name: Demon
   m_EditorClassIdentifier: 
-  enemyName: Wolf
-  description: Basic enemy
-  artwork: {fileID: 21300000, guid: 11bec1c4c24cb2943924375fa4c3f9e2, type: 3}
-  maxHealth: 12
+  enemyName: Demon
+  description: Strong enemy
+  artwork: {fileID: 21300000, guid: 838c6142f804e7749b5929a562679a0e, type: 3}
+  maxHealth: 25
   baseBlock: 0
   isElite: 0
   isBoss: 0
-  goldReward: 5
-  experienceReward: 10
+  goldReward: 15
+  experienceReward: 50
   cardRewardCount: 0
   possibleActions:
   - actionName: Attack
@@ -35,7 +35,7 @@ MonoBehaviour:
     block: 5
     statusEffectAmount: 0
     targetsAll: 0
-    selfEffect: 0
+    selfEffect: 1
     isTelegraphed: 1
   aggressiveThreshold: 0.8
   defensiveThreshold: 0.4

@@ -35,7 +35,7 @@ MonoBehaviour:
     block: 5
     statusEffectAmount: 0
     targetsAll: 0
-    selfEffect: 0
+    selfEffect: 1
     isTelegraphed: 1
   aggressiveThreshold: 0.8
   defensiveThreshold: 0.4
