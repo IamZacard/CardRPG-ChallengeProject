@@ -59,7 +59,7 @@ public class CombatManager : MonoBehaviour
         }
     }
 
-    public void StartCombat(List<Enemy> enemies)
+    public void StartCombat(PlayerData playerData, List<Enemy> enemies, Vector3 playerSpawnPosition)
     {
         // Set phase to initializing
         SetCombatPhase(CombatPhase.Initializing);
@@ -80,6 +80,14 @@ public class CombatManager : MonoBehaviour
 
             // Subscribe to enemy events
             enemy.OnDeath += () => CheckCombatEnd();
+        }
+
+        // Create and configure the player using PlayerFactory
+        player = PlayerFactory.CreatePlayer(playerData, playerSpawnPosition);
+        if (player == null)
+        {
+            Debug.LogError("Failed to create player!");
+            return;
         }
 
         // Initialize combat state

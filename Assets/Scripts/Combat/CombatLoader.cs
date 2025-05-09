@@ -30,7 +30,7 @@ public class CombatLoader : MonoBehaviour
     private bool isUIReady = false;
 
     // References to created objects
-    private Player player;
+    private PlayerData playerData; // Store PlayerData for StartCombat
     private List<Enemy> spawnedEnemies = new List<Enemy>();
     private Deck playerDeck;
     private GameObject loadingScreen;
@@ -88,7 +88,7 @@ public class CombatLoader : MonoBehaviour
         InitializeCombatState();
 
         // Begin the first turn
-        combatManager.StartCombat(spawnedEnemies);
+        combatManager.StartCombat(playerData, spawnedEnemies, playerSpawnPoint.position);
 
         Debug.Log("Combat initialization sequence completed successfully");
     }
@@ -137,14 +137,12 @@ public class CombatLoader : MonoBehaviour
         Debug.Log("Initializing player...");
 
         // Load player data from save or game state
-        PlayerData playerData = GameManager.Instance.GetPlayerData();
+        playerData = GameManager.Instance.GetPlayerData();
 
-        // Instantiate player at spawn point
-        player = PlayerFactory.CreatePlayer(playerData, playerSpawnPoint.position);
-
-        // Signal completion
+        // Note: Player is now created by CombatManager, so we don't instantiate here
+        // Just store playerData for later use
         isPlayerReady = true;
-        Debug.Log("Player initialized");
+        Debug.Log("Player data initialized");
 
         yield return null;
     }
@@ -225,7 +223,7 @@ public class CombatLoader : MonoBehaviour
         // Create and populate combat state
         CombatState combatState = new CombatState
         {
-            Player = player,
+            // Player is now set by CombatManager, so we don't assign it here
             Enemies = spawnedEnemies.ToArray(),
             PlayerDeck = playerDeck,
             TurnCount = 0,
